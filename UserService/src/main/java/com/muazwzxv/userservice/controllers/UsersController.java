@@ -1,7 +1,9 @@
 package com.muazwzxv.userservice.controllers;
 
+import com.muazwzxv.userservice.models.CreateUserResponseModel;
 import com.muazwzxv.userservice.models.Users;
 import com.muazwzxv.userservice.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -14,17 +16,21 @@ public class UsersController {
 
     private final Environment env;
     private final UserService userService;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public UsersController(UserService userService, Environment env) {
+    public UsersController(UserService userService, Environment env, ModelMapper modelMapper) {
         this.userService = userService;
         this.env = env;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping
-    public ResponseEntity<Users> create(@RequestBody Users user) {
-        this.userService.createUser(user);
-        return new ResponseEntity<Users>(HttpStatus.CREATED);
+    public ResponseEntity<CreateUserResponseModel> create(@RequestBody Users user) {
+        Users created = this.userService.createUser(user);
+
+        CreateUserResponseModel toReturn =  modelMapper.map(created, CreateUserResponseModel.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(toReturn);
     }
 
     @GetMapping("/status/check")
