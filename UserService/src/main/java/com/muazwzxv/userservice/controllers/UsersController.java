@@ -4,6 +4,8 @@ import com.muazwzxv.userservice.models.Users;
 import com.muazwzxv.userservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,10 +22,9 @@ public class UsersController {
     }
 
     @PostMapping
-    public String create(@RequestBody Users user) {
+    public ResponseEntity<Users> create(@RequestBody Users user) {
         this.userService.createUser(user);
-
-        return "user is created";
+        return new ResponseEntity<Users>(HttpStatus.CREATED);
     }
 
     @GetMapping("/status/check")
