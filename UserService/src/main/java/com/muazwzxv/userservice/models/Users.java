@@ -20,9 +20,11 @@ public class Users implements Serializable {
     @Column(nullable = false, length = 100, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     // Public user id exposed to the user
+    @Column(nullable = false, unique = true)
     private String userId;
 
     public long getId() {
