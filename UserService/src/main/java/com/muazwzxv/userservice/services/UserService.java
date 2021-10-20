@@ -19,7 +19,7 @@ public class UserService {
     }
 
     public Users createUser(Users user)  {
-        System.out.println(user.toString());
+        user.setPassword(bcrypt.encode(user.getPassword()));
         return userRepository.save(user);
     }
 }

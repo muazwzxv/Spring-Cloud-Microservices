@@ -30,6 +30,7 @@ public class UsersController {
         Users created = this.userService.createUser(user);
 
         CreateUserResponseModel toReturn =  modelMapper.map(created, CreateUserResponseModel.class);
+        System.out.println(created.toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(toReturn);
     }
 
