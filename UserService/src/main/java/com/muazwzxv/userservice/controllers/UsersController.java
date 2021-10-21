@@ -1,6 +1,6 @@
 package com.muazwzxv.userservice.controllers;
 
-import com.muazwzxv.userservice.models.CreateUserResponseModel;
+import com.muazwzxv.userservice.models.dto.CreateUserResponseModel;
 import com.muazwzxv.userservice.models.Users;
 import com.muazwzxv.userservice.services.UserService;
 import org.modelmapper.ModelMapper;

@@ -1,4 +1,4 @@
-package com.muazwzxv.userservice.models;
+package com.muazwzxv.userservice.models.dto;
 
 public class CreateUserResponseModel {
 
