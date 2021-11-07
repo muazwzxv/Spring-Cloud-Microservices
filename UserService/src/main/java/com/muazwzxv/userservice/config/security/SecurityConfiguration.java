@@ -11,9 +11,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final Environment env;
+    private final AuthenticationFilter authFilter;
 
     @Autowired
-    public SecurityConfiguration(Environment env) {
+    public SecurityConfiguration(Environment env, AuthenticationFilter authFilter) {
+        this.authFilter = authFilter;
         this.env = env;
     }
 
@@ -21,7 +23,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // We disable csrf because we want to use jwt
         http.csrf().disable();
-        http.authorizeRequests().antMatchers("/**").hasIpAddress(env.getProperty("gateway.ip"));
+        http.authorizeRequests().antMatchers("/**")
+                .hasIpAddress(env.getProperty("gateway.ip"))
+                .and()
+                .addFilter(getAuthenticationFilter());
         http.headers().frameOptions().disable();
+    }
+
+    private AuthenticationFilter getAuthenticationFilter() throws Exception{
+       this.authFilter.setAuthenticationManager(authenticationManager());
+       return this.authFilter;
     }
 }
