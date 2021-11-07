@@ -3,11 +3,17 @@ package com.muazwzxv.userservice.services;
 import com.muazwzxv.userservice.models.Users;
 import com.muazwzxv.userservice.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bcrypt;
@@ -16,6 +22,14 @@ public class UserService {
     public UserService(UserRepository userRepository, BCryptPasswordEncoder bcrypt) {
         this.userRepository = userRepository;
         this.bcrypt = bcrypt;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Users user = userRepository.findByEmail(email);
+        if(user == null) throw new UsernameNotFoundException(email);
+
+        return new User(user.getEmail(), user.getPassword(), true, true, true, true, new ArrayList<>());
     }
 
     public Users createUser(Users user)  {
