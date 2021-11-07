@@ -14,13 +14,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final Environment env;
-    private final AuthenticationFilter authFilter;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserService userService;
 
     @Autowired
-    public SecurityConfiguration(Environment env, AuthenticationFilter authFilter, BCryptPasswordEncoder bCryptPasswordEncoder, UserService userService) {
-        this.authFilter = authFilter;
+    public SecurityConfiguration(Environment env,  BCryptPasswordEncoder bCryptPasswordEncoder, UserService userService) {
         this.env = env;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userService = userService;
@@ -43,7 +41,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception{
-       this.authFilter.setAuthenticationManager(authenticationManager());
-       return this.authFilter;
+        AuthenticationFilter authFilter = new AuthenticationFilter();
+        authFilter.setAuthenticationManager(authenticationManager());
+        return authFilter;
     }
 }

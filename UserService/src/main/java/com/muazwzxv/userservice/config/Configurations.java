@@ -1,6 +1,5 @@
 package com.muazwzxv.userservice.config;
 
-import com.muazwzxv.userservice.config.security.AuthenticationFilter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,11 +10,6 @@ public class Configurations {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
-    }
-
-    @Bean
-    public AuthenticationFilter authenticationFilter () {
-        return new AuthenticationFilter();
     }
 
     @Bean
