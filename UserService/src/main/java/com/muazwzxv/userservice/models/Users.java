@@ -8,7 +8,6 @@ import java.io.Serializable;
 @Table(name="users")
 public class Users implements Serializable {
 
-
     @Serial
     private static final long serialVersionUID = 6456235505851333694L;
     // Private user id
@@ -18,7 +17,6 @@ public class Users implements Serializable {
     @Column(nullable = false, length = 50)
     private String firstName;
 
-    private static final long serialVersionUID =
     @Column(nullable = false, length = 50)
     private String lastName;
 

@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -34,6 +35,7 @@ public class UserService implements UserDetailsService {
 
     public Users createUser(Users user)  {
         user.setPassword(bcrypt.encode(user.getPassword()));
+        user.setUserId(UUID.randomUUID().toString());
         return userRepository.save(user);
     }
 }
