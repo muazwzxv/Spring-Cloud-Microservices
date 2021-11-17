@@ -1,12 +1,16 @@
 package com.muazwzxv.userservice.models;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 
 @Entity
 @Table(name="users")
 public class Users implements Serializable {
 
+
+    @Serial
+    private static final long serialVersionUID = 6456235505851333694L;
     // Private user id
     @Id @GeneratedValue
     private long id;
@@ -14,6 +18,7 @@ public class Users implements Serializable {
     @Column(nullable = false, length = 50)
     private String firstName;
 
+    private static final long serialVersionUID =
     @Column(nullable = false, length = 50)
     private String lastName;
 
