@@ -13,3 +13,7 @@
 - CRUD for users
 - Authentication
 - Authorization
+
+
+### Todo 
+- [ ]  Migrate from Spring Cloud to Zuul API Gateway
