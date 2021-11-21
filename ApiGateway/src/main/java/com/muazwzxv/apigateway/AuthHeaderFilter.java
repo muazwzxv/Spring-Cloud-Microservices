@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -24,11 +23,12 @@ public class AuthHeaderFilter extends AbstractGatewayFilterFactory<AuthHeaderFil
 
     @Autowired
     public AuthHeaderFilter(Environment env) {
+        super(Config.class);
         this.env = env;
     }
 
     public static class Config {
-
+        // Configuration properties goes here
     }
 
     @Override
@@ -44,6 +44,9 @@ public class AuthHeaderFilter extends AbstractGatewayFilterFactory<AuthHeaderFil
             String jwt = (req.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0))
                     .replace("Bearer", "");
 
+            if (!isJWTValid(jwt))
+                return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
+
             return chain.filter(exchange);
         });
     }
@@ -55,15 +58,19 @@ public class AuthHeaderFilter extends AbstractGatewayFilterFactory<AuthHeaderFil
         return res.setComplete();
     }
 
-    private boolean isjwtValid(String jwt) {
+    private boolean isJWTValid(String jwt) {
         try {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(env.getProperty("jwt.secret")))
                     .build();
-            DecodedJWT decoded = verifier.verify(jwt);
+            String id = (verifier.verify(jwt)).getSubject();
+
+            if (id == null || id.isEmpty())
+                return false;
+
+            return true;
         } catch (JWTDecodeException e) {
-
+            System.out.println(e.getMessage());
+            return false;
         }
-        return true;
     }
-
 }
