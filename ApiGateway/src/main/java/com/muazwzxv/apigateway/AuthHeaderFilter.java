@@ -3,7 +3,7 @@ package com.muazwzxv.apigateway;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class AuthHeaderFilter extends AbstractGatewayFilterFactory<AuthHeaderFilter.Config> {
 
-    private Environment env;
+    private final Environment env;
 
     @Autowired
     public AuthHeaderFilter(Environment env) {
@@ -31,6 +31,7 @@ public class AuthHeaderFilter extends AbstractGatewayFilterFactory<AuthHeaderFil
         // Configuration properties goes here
     }
 
+
     @Override
     public GatewayFilter apply(Config config) {
         // We will approach this code using lambdas and reactive code
@@ -41,11 +42,11 @@ public class AuthHeaderFilter extends AbstractGatewayFilterFactory<AuthHeaderFil
             if (!req.getHeaders().containsKey(HttpHeaders.AUTHORIZATION))
                 return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
 
-            String jwt = (req.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0))
-                    .replace("Bearer", "");
+            String[] jwt = (req.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0)).split(" ", 2);
 
-            if (!isJWTValid(jwt))
+            if (!isJWTValid(jwt[1])) {
                 return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
+            }
 
             return chain.filter(exchange);
         });
@@ -62,14 +63,9 @@ public class AuthHeaderFilter extends AbstractGatewayFilterFactory<AuthHeaderFil
         try {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(env.getProperty("jwt.secret")))
                     .build();
-            String id = (verifier.verify(jwt)).getSubject();
-
-            if (id == null || id.isEmpty())
-                return false;
-
+            verifier.verify(jwt);
             return true;
-        } catch (JWTDecodeException e) {
-            System.out.println(e.getMessage());
+        } catch (JWTVerificationException e) {
             return false;
         }
     }
