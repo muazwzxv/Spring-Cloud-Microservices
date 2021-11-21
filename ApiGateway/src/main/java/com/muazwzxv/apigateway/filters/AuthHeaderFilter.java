@@ -1,4 +1,4 @@
-package com.muazwzxv.apigateway;
+package com.muazwzxv.apigateway.filters;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
