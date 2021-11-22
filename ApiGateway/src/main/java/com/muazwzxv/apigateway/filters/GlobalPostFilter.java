@@ -17,6 +17,7 @@ public class GlobalPostFilter implements GlobalFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return chain.filter(exchange)
                 .then(Mono.fromRunnable(() -> {
+
                     // Logic resides here
                     logger.info("Global post filter is executed");
                 }));
